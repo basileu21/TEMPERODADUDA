@@ -265,7 +265,7 @@
 
 		           </section>
 
-<div id="carrinho">
+        <div id="carrinho">
             <h2>Carrinho</h2>
             <ul id="itensCarrinho"></ul>
             <p>Total: R$<span id="totalCarrinho">0.00</span></p>
@@ -283,20 +283,21 @@
                 <label for="telefone">Telefone:</label>
                 <input type="text" id="telefone" required><br><br>
                 <label for="pagamento">Forma de Pagamento:</label>
-                <select id="pagamento">
+                <select id="pagamento" required>
+                    <option value="" disabled selected>Selecione uma opção</option>
                     <option value="pix">Pix</option>
                     <option value="dinheiro">Dinheiro</option>
                     <option value="cartao">Cartão</option>
                 </select>
                 <div id="pixInfo" style="display: none;">
                     <p>Chave Pix: mariaeduardacilenepedra@gmail.com</p>
-					<p>Chave Pix: (27)99959-5386</p>
+					<p>Chave Pix: (27) 99959-5386</p>
                 </div>
                 <div id="trocoInfo" style="display: none;">
                     <label for="troco">Você precisa de troco?</label>
                     <select id="troco">
-                        <option value="sim">Sim</option>
                         <option value="nao">Não</option>
+                        <option value="sim">Sim</option>
                     </select>
                     <div id="quantidadeTroco" style="display: none;">
                         <label for="quantidade">TROCO PARA QUANTOS?</label>
@@ -332,6 +333,7 @@
         function enviarPedido() {
             // Mostra o formulário de entrega
             document.getElementById("formularioEntrega").style.display = "block";
+
             const pagamentoSelect = document.getElementById("pagamento");
             pagamentoSelect.addEventListener("change", function() {
                 if (this.value === "pix") {
@@ -357,9 +359,9 @@
         }
 
         function finalizarPedido() {
-            const nome = document.getElementById("nome").value;
-            const endereco = document.getElementById("endereco").value;
-            const telefone = document.getElementById("telefone").value;
+            const nome = document.getElementById("nome").value.trim();
+            const endereco = document.getElementById("endereco").value.trim();
+            const telefone = document.getElementById("telefone").value.trim();
             const formaPagamento = document.getElementById("pagamento").value;
             let precisaTroco = null;
             let quantidadeTroco = null;
@@ -369,6 +371,12 @@
                 if (precisaTroco === 'Sim') {
                     quantidadeTroco = document.getElementById("quantidade").value || '0';
                 }
+            }
+
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (!nome || !endereco || !telefone || !formaPagamento) {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+                return;
             }
 
             // Cria a mensagem para enviar pelo WhatsApp
@@ -383,7 +391,9 @@
                 }
             }
 
-            const whatsappUrl = `https://wa.me/27999595386?text=${mensagem}`; // Troque pelo seu número
+            mensagem += `%0A\nSeu pedido:%0A${pedido}%0A${totalStr}`;
+
+            const whatsappUrl = `https://wa.me/5519995955386?text=${mensagem}`; // Troque pelo seu número
             window.open(whatsappUrl, '_blank'); // Abre o WhatsApp em uma nova aba
             
             // Limpa o carrinho e esconde o formulário
